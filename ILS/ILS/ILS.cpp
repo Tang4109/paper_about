@@ -81,8 +81,8 @@ int permutation[CITY_SIZE];
 CITIES cities[CITY_SIZE];
 
 
-//berlin52城市坐标，最优解7542好像
-CITIES berlin52[CITY_SIZE] = {
+//berlin31城市坐标
+CITIES berlin31[CITY_SIZE] = {
 	{ 1304,2312 },{ 3639,1315 },{ 4177,2244 },{ 3712,1399 },
 { 3488,1535 },{ 3326,1556 },{ 3238,1229 },{ 4196,1004 },
 { 4312,790 },{ 4386,570 },{ 3007,1970 },{ 2562,1756 },
@@ -93,7 +93,6 @@ CITIES berlin52[CITY_SIZE] = {
 { 3394,2643 },{ 3439,3201 },{ 2935,3240 },
 { 3140,3550 },{ 2545,2357 },{ 2778,2826 },
 { 2370,2975 } };
-
 
 
 
@@ -146,7 +145,7 @@ void random_permutation(int * cities_permutation)
 	for (i = 0; i < CITY_SIZE; i++)
 	{
 		//城市排列顺序随机打乱
-		r = rand() % (CITY_SIZE - i) + i;
+		r = rand() % (CITY_SIZE - i) + i;//r最大为CITY_SIZE-1
 		temp = cities_permutation[i];
 		cities_permutation[i] = cities_permutation[r];
 		cities_permutation[r] = temp;
@@ -178,6 +177,7 @@ void two_opt_swap(int *cities_permutation, int *new_cities_permutation, int inde
 	{
 		new_cities_permutation[i] = cities_permutation[i];
 	}
+	//new_cities_permutation = cities_permutation;
 
 	swap_element(new_cities_permutation, index_i, index_j);
 }
@@ -434,14 +434,15 @@ void iterated_local_search(SOLUTION & best_solution, CITIES * cities, int max_it
 			}
 			best_solution.cost = current_solution->cost;
 		}
-		cout << setw(13) << setiosflags(ios::left) << "迭代搜索 " << i << " 次\t" << "最优解 = " << best_solution.cost << " 当前解 = " << current_solution->cost << endl;
+		cout <<setw(20) << setiosflags(ios::left) << "迭代搜索 " << i << " 次\t" << "最优解 = " << best_solution.cost << " 当前解 = " << current_solution->cost << endl;
 	}
 
 }
 
 int main()
 {
-	srand(1);
+	//srand((unsigned)time(NULL));//使用当前时钟作为随机数种子
+	srand(1);//void srand(unsigned int seed)
 	int max_iterations = 600;
 	int max_no_improve = 50;
 	//初始化指针数组 
@@ -451,15 +452,15 @@ int main()
 
 	SOLUTION best_solution;
 
-	iterated_local_search(best_solution, berlin52, max_iterations, max_no_improve);
+	iterated_local_search(best_solution, berlin31, max_iterations, max_no_improve);
 
 	cout << endl << endl << "搜索完成！ 最优路线总长度 = " << best_solution.cost << endl;
 	cout << "最优访问城市序列如下：" << endl;
-	for (int i = 0; i < CITY_SIZE; i++)
+	for (int i = 0; i < CITY_SIZE-1; i++)
 	{
-		cout << setw(4) << setiosflags(ios::left) << best_solution.permutation[i];
+		cout << setiosflags(ios::left) << best_solution.permutation[i]<<"->";
 	}
-
+	cout << best_solution.permutation[CITY_SIZE-1] << endl;
 	cout << endl << endl;
 	system("pause");
 	return 0;
